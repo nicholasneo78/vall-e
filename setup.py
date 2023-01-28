@@ -29,11 +29,11 @@ with open("README.md", "r") as f:
 
 setup(
     name="vall-e",
-    python_requires=">=3.10.0",
+    #python_requires=">=3.10.0",
     version=write_version("0.0.1"),
     description="An unofficial toy implementation of the audio LM VALL-E",
-    author="enhuiz",
-    author_email="niuzhe.nz@outlook.com",
+    author="nicholasneo78",
+    author_email="nicholasneo78@gmail.com",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
@@ -55,5 +55,5 @@ setup(
         # "torchaudio>=0.13.0",
         "tqdm>=4.64.1",
     ],
-    url="https://github.com/enhuiz/vall-e",
+    url="https://github.com/nicholasneo78/vall-e",
 )
