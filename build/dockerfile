@@ -1,0 +1,47 @@
+FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
+
+ENV TZ=Asia/Singapore
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Install libsndfile1 (linux soundfile package)
+RUN apt-get update && apt-get install -y ffmpeg build-essential libsndfile1 git sox wget libssl-dev openssl sudo \
+&& apt-get -y install apt-utils gcc jupyter libpq-dev libsndfile1 ffmpeg cython wget git vim python3-pip libffi-dev \
+&& apt-get -y install cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libeigen3-dev zlib1g-dev libbz2-dev liblzma-dev \
+&& rm -rf /var/lib/apt/lists/*
+
+# Get specific version of python
+RUN wget https://www.python.org/ftp/python/3.10.7/Python-3.10.7.tgz \
+&& tar xzvf Python-3.10.7.tgz \
+&& cd Python-3.10.7 \
+&& ./configure \
+&& make \
+&& sudo make install
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED 1
+
+# Upgrade the pip
+RUN pip install --upgrade pip
+
+# Install pip requirements
+RUN rm -rf $(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")/ruamel*
+ADD requirements.txt .
+RUN python3.10 -m pip install --no-cache-dir -r requirements.txt
+
+# numpy problems
+# RUN pip install numpy==1.21.1 --no-binary numpy
+
+# install torch here
+RUN python3 -m pip install torch==1.12.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
+
+# # pip install the requirements of vall-e
+# RUN pip install git+https://github.com/nicholasneo78/vall-e
+# && cd vall-e \
+# && pip install .
+
+#docker container starts with bash
+WORKDIR /vall_e
+RUN ["bash"]

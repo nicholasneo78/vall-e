@@ -6,4 +6,3 @@ __pycache__
 /config
 /*.egg-info
 /vall_e/version.py
-/build
